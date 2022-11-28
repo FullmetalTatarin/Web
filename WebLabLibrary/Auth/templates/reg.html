@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Регистрация{% endblock %}
+{% block content %}
+<form method="POST" class="reg-and-login-form">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" value="Регистрация">
+</form>
+{% endblock %}
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script>
+    $(document).ready(
+        function () {
+            $('.login').on(
+                'input',
+                function() {
+                    $.ajax({
+                        data:$(this).serialize(),
+                        url: "{% url 'validate_login' %}",
+                        success: function(responce) {
+                            if (responce.is_taken == true) {
+                                var form = document.querySelector(".reg-and-login-form")
+                                var error = document.createElement('div')
+                                var login = form.querySelector('.login')
+                                error.className='logerror'
+                                error.style.color = 'red'
+                                error.innerHTML = 'Этот логин занят!'
+                                login.parentElement.insertBefore(error, login)
+                            } else {
+                                error = $('.logerror')
+                                if (error != null) error.remove()
+                            }
+                        }
+                    })
+                }
+            )
+        }
+    )
+</script>
+<script>
+    $(document).ready(
+        function() {
+            $('.email').on(
+                'input',
+                function() {
+                    $.ajax({
+                        data:$(this).serialize(),
+                        url: "{% url 'validate_email' %}",
+                        success: function(responce) {
+                            if (responce.is_taken == true) {
+                                var form = document.querySelector(".reg-and-login-form")
+                                var error = document.createElement('div')
+                                var email = form.querySelector('.email')
+                                error.className='emailtakenerror'
+                                error.style.color = 'red'
+                                error.innerHTML = 'Этот адрес занят!'
+                                email.parentElement.insertBefore(error, email)
+                            } else {
+                                error = $('.emailtakenerror')
+                                if (error != null) error.remove()
+                            }
+                        }
+                    })
+                }
+            )
+            return false;
+        }
+    )
+</script>
+<script>
+    var form = document.querySelector(".reg-and-login-form")
+    form.addEventListener('input', function (event) {
+    event.preventDefault()
+    console.log('clicked on validate')
+
+    var password = form.querySelector('.password')
+    var rep_password = form.querySelector('.rep-password')
+    var email = form.querySelector('.email')
+
+    var regex = new RegExp('([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
+    
+    var error = form.querySelector('.emailerror')
+    if (error != null) error.remove()
+    var error = form.querySelector('.passworderror')
+    if  (error != null) error.remove()
+    var error = form.querySelector('.reperror')
+    if  (error != null) error.remove()
+
+    if (password.value.length < 6){
+        var error = document.createElement('div')
+        error.className='passworderror'
+        error.style.color = 'red'
+        error.innerHTML = 'Длина пароля должна быть более 6 символов'
+        password.parentElement.insertBefore(error, password)
+    }
+
+    if (password.value != rep_password.value){
+        var error = document.createElement('div')
+        error.className='reperror'
+        error.style.color = 'red'
+        error.innerHTML = 'Пароли не совпадают!'
+        rep_password.parentElement.insertBefore(error, rep_password)
+    } 
+
+    if (!regex.test(email.value)) {
+        console.log('Email is invalid')
+        var error = document.createElement('div')
+        error.className='emailerror'
+        error.style.color = 'red'
+        error.innerHTML = 'Введён адрес некорректного формата'
+        email.parentElement.insertBefore(error, email)
+    }
+    })
+</script>
+{% endblock %}

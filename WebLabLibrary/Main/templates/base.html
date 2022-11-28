@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Библиотека{% endblock %}</title>
+        <style>
+            .menu_button {
+                font-size: 130%;
+                padding: 0.15em 0.15em;
+            }
+            .add-and-change-book-form {
+                border-style: solid;
+                border-color: aquamarine;
+                background-color: antiquewhite;
+                padding: 1%;
+            }
+        </style>
+        {% block css %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="menu">
+            <a href="/" class="menu_button">Каталог</a>
+            {% if role == 0 %}<a href="/reg" class="menu_button">Регистрация</a>{% endif %}
+            {% if role == 0 %}<a href="/login" class="menu_button">Логин</a>{% endif %}
+            {% if role == 1 or role == 2 %}<a href="/addBook" class="menu_button">Добавить книгу</a>{% endif %}
+            {% if role == 1 or role == 2 %}<a href="/logout" class="menu_button">Выйти из аккаунта</a>{% endif %}
+        </div>
+        <div class="content">
+            {% block content %} ПУСТО {% endblock %}
+        </div>
+    </body>
+    {% block js %}{% endblock %}
+</html>

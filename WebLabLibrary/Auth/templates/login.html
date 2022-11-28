@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Логин{% endblock %}
+{% block content %}
+<form method="POST" class="reg-and-login-form">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" value="Войти">
+</form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Изменение книги{% endblock %}
+{% block content %}
+<form method="POST" class="add-and-change-book-form">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <input type="submit" value="Изменить!" >
+</form>
+{% endblock %}

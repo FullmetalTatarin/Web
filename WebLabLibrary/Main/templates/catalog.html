@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Каталог{% endblock %}
+{% block css %}
+    <style>
+        .book {
+            border-style: solid;
+            border-color: aquamarine;
+            background-color: antiquewhite;
+            padding: 0.5%;
+        }
+        .book-data {
+            /* border-style: dotted;
+            border-color: chartreuse; */
+            background-color: rgb(248, 218, 182);
+            font-size: 115%;
+            padding: 0.5%;
+        }
+        .book-button {
+            font-size: 120%;
+            padding: 0.15em 0.15em;
+            margin: 0.1em;
+        }
+        a {
+            font-size: 120%;
+            padding: 0.15em 0.15em; 
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    {% for book in page_obj %}
+        <br>
+        <div class="book">
+            <div class="book-data">
+                Название: {{book.name}} <br>
+                Автор: {{book.author}} <br>
+                Издатель: {{book.publisher}} <br>
+                Город: {{book.city}} <br>
+                Цена: {{book.price}} рублей <br>
+            </div>
+            {% if role == 2 %}<a href="changeBook/{{book.id}}" class="book-button" name="changeBook">Изменить книгу</a>{% endif %}
+            {% if role == 2 %}<a href="deleteBook/{{book.id}}" class="book-button" name="deleteBook">Удалить книгу</a>{% endif %}
+        </div>  
+    {% endfor %}
+
+    <form method="POST" class="search_form">
+        {% csrf_token %}
+        <table>
+            <input id="id_search_by_city" class="search_by_city" type="text" name="search_by_city" maxlength="50">
+        </table>
+        <input type="submit" value="Поиск по городу издания" >
+        </form>
+
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">« Назад </a>
+        {% if page_obj.number > 3 %}
+            <a href="?page=1">1</a>
+            {% if page_obj.number > 4 %}
+                <span>...</span>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+            <span>...</span>
+            <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+        {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+            <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+
+        <a href="?page={{ page_obj.next_page_number }}">Далее »</a>
+    {% endif %}
+{% endblock %}
